@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "shape-warrior-t.lusbir"
+version = "1.0.0"
+authors = [
+  { name="Bonan Luan", email="bl.swt1@gmail.com" },
+]
+description = "An alternative conception of integer ranges in Python."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"GitHub" = "https://github.com/shape-warrior-t/lusbir"
