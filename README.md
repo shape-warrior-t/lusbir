@@ -1,5 +1,7 @@
 # Lusbir
 
+[Github](https://github.com/shape-warrior-t/lusbir) | [PyPI](https://pypi.org/project/shape-warrior-t.lusbir/)
+
 This library provides a Python integer range type -- the **lusbir** -- that is based on a different characterization of integer ranges than the characterization that built-in Python ranges are based on.
 
 ## Why?
@@ -11,8 +13,6 @@ That being said, if you think you'll find this useful, this _is_ a full-fledged 
 ## Installation
 
 The library should work for any version of Python starting from Python 3.10, though it has only been tested on Python 3.11.1.
-
-https://pypi.org/project/shape-warrior-t.lusbir/
 
 `pip install shape-warrior-t.lusbir`
 
