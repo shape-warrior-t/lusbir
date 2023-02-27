@@ -32,11 +32,15 @@ Just like Python ranges, the numbers in a lusbir increase by the step each time.
 
 We consider all numbers of the form $n \times \mathrm{step} + \mathrm{base}$, where $n$ is an integer -- in this case, all numbers of the form $2n + 1$ for some integer $n$:
 
-$$\dotsc, -13, -11, -9, -7, -5, -3, -1, 1, 3, 5, 7, 9, 11, 13, 15, \dotsc$$
+$$\dotsc, -5, -3, -1, 1, 3, 5, 7, 9, 11, 13, 15, \dotsc$$
 
 Then we apply the bounds, keeping only the numbers between 0 (inclusive) and 10 (exclusive):
 
-$$1, 3, 5, 7, 9$$
+$$\begin{gather}
+  \dotsc, -5, -3, -1, \boxed{1, 3, 5, 7, 9}, 11, 13, 15, \dotsc \\
+  \downarrow \\
+  1, 3, 5, 7, 9
+\end{gather}$$
 
 The end result, $[1, 3, 5, 7, 9]$, is the list of numbers that this lusbir represents.
 
@@ -44,10 +48,14 @@ The end result, $[1, 3, 5, 7, 9]$, is the list of numbers that this lusbir repre
 
 Take all numbers of the form $-10n + 5$ for some integer $n$:
 
-$$\dotsc, 75, 65, 55, 45, 35, 25, 15, 5, -5, -15, -25, -35, -45, -55, -65, \dotsc$$
+$$\dotsc, 75, 65, 55, 45, 35, 25, 15, 5, -5, -15, -25, \dotsc$$
 
 Keep only the numbers between 5 (exclusive) and 55 (inclusive):
 
-$$55, 45, 35, 25, 15$$
+$$\begin{gather}
+  \dotsc, 75, 65, \boxed{55, 45, 35, 25, 15}, 5, -5, -15, -25, \dotsc \\
+  \downarrow \\
+  55, 45, 35, 25, 15
+\end{gather}$$
 
 We find that this lusbir represents the list $[55, 45, 35, 25, 15]$. Since the step is negative, the list is ordered from high to low.
