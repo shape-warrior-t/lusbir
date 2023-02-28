@@ -4,17 +4,20 @@
 
 This library provides a Python integer range type -- the **lusbir** -- that is based on a different characterization of integer ranges than the characterization that built-in Python ranges are based on.
 
+
 ## Why?
 
 This project wasn't really made with a practical use case in mind -- it was more for exploring a novel concept, and also for gaining some experience making and publishing a library.
 
 That being said, if you think you'll find this useful, this _is_ a full-fledged library that can be installed and used in actual code. The public API is stable, though it currently leaves many details unspecified when it comes to the specific outputs of many methods.
 
+
 ## Installation
 
 The library should work for any version of Python starting from Python 3.10, though it has only been tested on Python 3.11.1.
 
 `pip install shape-warrior-t.lusbir`
+
 
 ## How do lusbirs work?
 
@@ -36,11 +39,11 @@ $$\dotsc, -5, -3, -1, 1, 3, 5, 7, 9, 11, 13, 15, \dotsc$$
 
 Then we apply the bounds, keeping only the numbers between 0 (inclusive) and 10 (exclusive):
 
-$$\begin{gather}
-  \dotsc, -5, -3, -1, \boxed{1, 3, 5, 7, 9}, 11, 13, 15, \dotsc \\
-  \downarrow \\
-  1, 3, 5, 7, 9
-\end{gather}$$
+$$\dotsc, -5, -3, -1, \boxed{1, 3, 5, 7, 9}, 11, 13, 15, \dotsc$$
+
+$$\downarrow$$
+
+$$1, 3, 5, 7, 9$$
 
 The end result, $[1, 3, 5, 7, 9]$, is the list of numbers that this lusbir represents.
 
@@ -52,10 +55,10 @@ $$\dotsc, 75, 65, 55, 45, 35, 25, 15, 5, -5, -15, -25, \dotsc$$
 
 Keep only the numbers between 5 (exclusive) and 55 (inclusive):
 
-$$\begin{gather}
-  \dotsc, 75, 65, \boxed{55, 45, 35, 25, 15}, 5, -5, -15, -25, \dotsc \\
-  \downarrow \\
-  55, 45, 35, 25, 15
-\end{gather}$$
+$$\dotsc, 75, 65, \boxed{55, 45, 35, 25, 15}, 5, -5, -15, -25, \dotsc$$
+
+$$\downarrow$$
+
+$$55, 45, 35, 25, 15$$
 
 We find that this lusbir represents the list $[55, 45, 35, 25, 15]$. Since the step is negative, the list is ordered from high to low.
