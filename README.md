@@ -26,7 +26,7 @@ All numbers in a lusbir are between the lusbir's lower bound and upper bound, wh
 
 Additionally, all numbers in a lusbir are of the form $n \times \mathrm{step} + \mathrm{base}$, where $n$ is an integer. This is like how all numbers in a Python range are of the form $n \times \mathrm{step} + \mathrm{start}$ for some integer $n$, but for lusbirs, $n$ can be negative -- instead of starting at 0, the starting value of $n$ is determined by the lower and upper bounds.
 
-Just like Python ranges, the numbers in a lusbir increase by the step each time. This means that lusbirs with a positive step are ordered from low to high and lusbirs with a negative step are ordered from high to low, the same as Python ranges.
+Just like Python ranges, we go from one element of a lusbir to the next by adding the step. This means that lusbirs with a positive step are ordered from low to high and lusbirs with a negative step are ordered from high to low, the same as Python ranges.
 
 ### Example: a lusbir with inclusive lower bound 0, exclusive upper bound 10, step 2, and base 1
 
