@@ -83,7 +83,7 @@ def _ceil_progress(x: int, step: int, base: int, /) -> int:
 
 
 BoundType: TypeAlias = Literal['()', '(]', '[)', '[]']
-"""All possible ways to specify lower and upper bound inclusivities in the standard Lusbir constructor.
+"""All possible ways to specify lower and upper bound inclusivities in the standard lusbir constructor.
 
 '()' -> both bounds exclusive
 '(]' -> exclusive lower bound, inclusive upper bound
@@ -100,7 +100,7 @@ _bound_type_to_inclusivities = {
 _inclusivities_to_bound_type = {incl: bt for bt, incl in _bound_type_to_inclusivities.items()}
 
 
-@final  # subclassing is currently not supported
+@final  # no guarantees that subclassing will work correctly
 class Lusbir(Sequence):
     """An integer range characterized by a lower bound (lbound), upper bound (ubound), step, and base.
 
@@ -114,6 +114,7 @@ class Lusbir(Sequence):
       x <  (numeric upper bound) if the upper bound is exclusive
     - x is of the form (n * step + base) for some integer n
 
+    Every number in the lusbir appears only once.
     Like Python ranges, lusbirs with a positive step are ordered from low to high
     and lusbirs with a negative step are ordered from high to low.
 
@@ -325,9 +326,6 @@ class Lusbir(Sequence):
         """Return self[subscript], according to standard indexing and slicing conventions for sequences.
 
         The return value is an integer when indexing and another lusbir when slicing.
-
-        (There are currently no guarantees on what the resulting lusbir looks like when slicing,
-        other than the fact that it must represent the appropriate list.)
         """
         if isinstance(subscript, int):
             try:
@@ -343,26 +341,19 @@ class Lusbir(Sequence):
 
         Two lusbirs that represent the same list will always hash to the same value,
         even if they have different lusb tuples.
-
-        (Currently uses the hash of the lusbir's underlying Python range, as it seems unlikely that
-        lusbirs and Python ranges will be used in the same places in code.)
         """
+        # Just return the hash of the underlying Python range --
+        # lusbirs and Python ranges probably won't be used in the same places in code anyway.
         return hash(self._range)
 
     def __iter__(self, /) -> Iterator[int]:
-        """Return an iterator such that `list(self)` evaluates to the list represented by this lusbir.
-
-        (There are currently no guarantees on what the resulting iterator looks like,
-        other than the fact that it must yield the correct numbers.)
-        """
+        """Return an iterator such that `list(self)` evaluates to the list represented by this lusbir."""
         return iter(self._range)
 
     def __repr__(self, /) -> str:
-        """Return a string s such that eval(s).lusb_tuple == self.lusb_tuple.
-
-        (Current format is `Lusbir(bound_type, lb_num, ub_num[, step[, base]])`,
-        with `step` and `base` only included if they are different from their default values.)
-        """
+        """Return a string s such that eval(s).lusb_tuple == self.lusb_tuple."""
+        # Format: `Lusbir(bound_type, lb_num, ub_num[, step[, base]])`;
+        # `step` and `base` are only included if they are different from their default values.
         (lb_num, lb_incl), (ub_num, ub_incl), step, base = self._lusb_tuple
         bound_type = _inclusivities_to_bound_type[lb_incl, ub_incl]
         if base != 0:
@@ -374,22 +365,14 @@ class Lusbir(Sequence):
 
     @staticmethod
     def from_range(r: range, /) -> 'Lusbir':
-        """Return a lusbir representing the same list as the given Python range.
-
-        (There are currently no guarantees on what the resulting lusbir looks like,
-        other than the fact that it must represent the appropriate list.)
-        """
+        """Return a lusbir representing the same list as the given Python range."""
         if r.step > 0:
             return Lusbir('[)', r.start, r.stop, r.step, r.start)
         else:
             return Lusbir('(]', r.stop, r.start, r.step, r.start)
 
     def to_range(self, /) -> range:
-        """Return a range representing the same list as this lusbir.
-
-        (There are currently no guarantees on what the resulting Python range looks like,
-        other than the fact that it must represent the appropriate list.)
-        """
+        """Return a range representing the same list as this lusbir."""
         return self._range
 
     # endregion
@@ -409,11 +392,7 @@ class Lusbir(Sequence):
         return len(self._range)
 
     def __reversed__(self, /) -> Iterator[int]:
-        """Return a reverse iterator.
-
-        (There are currently no guarantees on what the resulting iterator looks like,
-        other than the fact that it must yield the correct numbers.)
-        """
+        """Return a reverse iterator."""
         return reversed(self._range)
 
     def count(self, x: int, /) -> int:

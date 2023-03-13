@@ -5,6 +5,7 @@
 #     - Fundamental correctness: a lusbir corresponds to the appropriate list for its lusb tuple
 #         - Inclusion: a number is in the lusbir iff it is between the lower and upper bounds and is of the form
 #               n * step + base, n integer
+#         - Uniqueness: lusbirs do not contain duplicate elements
 #         - Order: lusbirs with positive step are in ascending order
 #           and lusbirs with negative step are in descending order
 #     - Standard constructor
@@ -81,8 +82,8 @@ def integers_within_size():
     return integers(min_value=-MAX_INT_SIZE, max_value=MAX_INT_SIZE)
 
 
-def nonzero(x: int) -> bool:
-    return x != 0
+def nonzero_integers_within_size():
+    return integers_within_size().filter(lambda x: x != 0)
 
 
 @composite
@@ -91,7 +92,7 @@ def lusbirs(draw):
     lb_incl = draw(booleans())
     ub_num = draw(integers_within_size())
     ub_incl = draw(booleans())
-    step = draw(integers_within_size().filter(nonzero))
+    step = draw(nonzero_integers_within_size())
     base = draw(integers_within_size())
     return Lusbir.from_lusb_tuple(LusbTuple(Bound(lb_num, lb_incl), Bound(ub_num, ub_incl), step, base))
 
@@ -107,6 +108,11 @@ def contains(lusbir: Lusbir, x: int) -> bool:
 @given(lusbirs(), integers())
 def test_inclusion_correctness(lusbir, x):
     assert (x in list(lusbir)) == contains(lusbir, x)
+
+
+@given(lusbirs())
+def test_uniqueness_correctness(lusbir):
+    assert len(list(lusbir)) == len(set(lusbir))
 
 
 @given(lusbirs())
@@ -155,7 +161,7 @@ def test_to_range(lusbir):
 
 
 def ranges():
-    return builds(range, integers_within_size(), integers_within_size(), integers_within_size().filter(nonzero))
+    return builds(range, integers_within_size(), integers_within_size(), nonzero_integers_within_size())
 
 
 @given(ranges())
