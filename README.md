@@ -4,19 +4,9 @@
 
 This library provides a Python integer range type -- the **lusbir** -- that is based on a different characterization of integer ranges than the characterization that built-in Python ranges are based on.
 
-
-## Why?
-
-This project wasn't really made with a practical use case in mind -- it was more for exploring a novel concept, and also for gaining some experience making and publishing a library.
-
-That being said, if you think you'll find this useful, this _is_ a full-fledged library that can be installed and used in actual code. The public API is stable, though it currently leaves many details unspecified when it comes to the specific outputs of many methods.
-
-
-## Installation
-
-The library should work for any version of Python starting from Python 3.10, though it has only been tested on Python 3.11.1.
-
 `pip install shape-warrior-t.lusbir`
+
+This project wasn't really made with a practical use case in mind -- it was more for exploring a novel concept, and also for gaining some experience making and publishing a library. That being said, if you think you'll find this useful, feel free to install and use this library in your own code. The library should work for any version of Python starting from Python 3.10, though it has only been tested on Python 3.11.1.
 
 
 ## How do lusbirs work?
@@ -63,76 +53,180 @@ $$55, 45, 35, 25, 15$$
 
 We find that this lusbir represents the list $[55, 45, 35, 25, 15]$. Since the step is negative, the list is ordered from high to low.
 
+In general, if a number is of the form $m \times \mathrm{step} + \mathrm{base}$ for some integer $m$, then it will be of the form $n \times \mathrm{-step} + \mathrm{base}$ for the integer $n = -m$. Thus, negating the step of a lusbir will always reverse the list that it represents.
 
-## Actually using the library
 
-First, let's create the example lusbirs from the previous section.
+## Lusbirs in code
 
-### First example
+### Introductory example
 
 ```python
 >>> from lusbir import Lusbir
->>> for i in Lusbir('[)', 0, 10, 2, 1):
+>>> for i in Lusbir('[)', 0, 30, 3, 2):
 ...     print(i)
 ...
-1
-3
+2
 5
-7
-9
+8
+11
+14
+17
+20
+23
+26
+29
 ```
 
-By passing the integer arguments 0, 10, 2, and 1 to the `Lusbir` standard constructor, we create a lusbir with lower bound 0, upper bound 10, step 2, and base 1. The **bound type**, `'[)'`, indicates that the lower bound is _inclusive_ and that the upper bound is _exclusive_. As previously mentioned, this lusbir represents the list $[1, 3, 5, 7, 9]$, and as expected, iterating over the lusbir gives us the numbers 1, 3, 5, 7, and 9.
+We create a lusbir by passing some arguments to the `Lusbir` constructor, and we can iterate over the resulting `Lusbir` object just like a Python range.
 
-### Second example
+The four numeric arguments specify, in order, the numeric lower bound, numeric upper bound, step, and base of the new lusbir. In this case, the lower bound is 0, the upper bound is 30, the step is 3, and the base is 2. Thus, the resulting lusbir represents the list of all numbers between 0 and 30 that are of the form $3n + 2$ -- in other words, the list $[2, 5, 8, 11, 14, 17, 20, 23, 26, 29]$, which matches the output that we got.
+
+The initial string argument, meanwhile, is the new lusbir's _bound type_, representing whether the lower bound and the upper bound are inclusive or exclusive. The options for this argument are as follows:
+
+| Bound type | Lower bound | Upper bound |
+|------------|-------------|-------------|
+| `'()'`     | exclusive   | exclusive   |
+| `'(]'`     | exclusive   | inclusive   |
+| `'[)'`     | inclusive   | exclusive   |
+| `'[]'`     | inclusive   | inclusive   |
+
+### General form
+
+More generally, a call to the `Lusbir` constructor looks like this:
+
+`Lusbir(bound_type, lb_num, ub_num, step, base)`
+
+where `bound_type` is one of the four options from above, and `lb_num` (numeric lower bound), `ub_num` (numeric upper bound), `step`, and `base` are integers, with the restriction that `step` is nonzero. All arguments are positional-only.
+
+There are abbreviated forms for the `Lusbir` constructor that do not specify all arguments, letting unspecified arguments take on their default values. Here are all of the ways to call the `Lusbir` constructor:
+- `Lusbir(ub_num)`
+- `Lusbir(lb_num, ub_num)`
+- `Lusbir(lb_num, ub_num, step)`
+- `Lusbir(lb_num, ub_num, step, base)`
+- `Lusbir(bound_type, lb_num, ub_num)`
+- `Lusbir(bound_type, lb_num, ub_num, step)`
+- `Lusbir(bound_type, lb_num, ub_num, step, base)`
+
+By default, `bound_type` is `'[)'`, `lb_num` is 0, `step` is 1, and `base` is 0. (`ub_num` must always be specified.)
+
+### Big table of more examples
+
+| Code                            | Bounds               | Form           | List represented                           |
+|---------------------------------|----------------------|----------------|--------------------------------------------|
+| `Lusbir('[)', 0, 10, 2, 1)`     | $0 \leq x < 10$      | $x = 2n + 1$   | $[1, 3, 5, 7, 9]$                          |
+| `Lusbir('(]', 5, 55, -10, 5)`   | $5 < x \leq 55$      | $x = -10n + 5$ | $[55, 45, 35, 25, 15]$                     |
+| `Lusbir('[]', -6, 6, 2)`        | $-6 \leq x \leq 6$   | $x = 2n$       | $[-6, -4, -2, 0, 2, 4, 6]$                 |
+| `Lusbir('()', -6, 0)`           | $-6 < x < 0$         | $x = n$        | $[-5, -4, -3, -2, -1]$                     |
+| `Lusbir(10)`                    | $0 \leq x < 10$      | $x = n$        | $[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]$           |
+| `Lusbir(10, 20)`                | $10 \leq x < 20$     | $x = n$        | $[10, 11, 12, 13, 14, 15, 16, 17, 18, 19]$ |
+| `Lusbir(10, 20, 2)`             | $10 \leq x < 20$     | $x = 2n$       | $[10, 12, 14, 16, 18]$                     |
+| `Lusbir(10, 20, 2, 1)`          | $10 \leq x < 20$     | $x = 2n + 1$   | $[11, 13, 15, 17, 19]$                     |
+| `Lusbir(10, 20, -2, 1)`         | $10 \leq x < 20$     | $x = -2n + 1$  | $[19, 17, 15, 13, 11]$                     |
+| `Lusbir(0, 10, -1)`             | $0 \leq x < 10$      | $x = -n$       | $[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]$           |
+| `Lusbir('(]', 0, 10, -1)`       | $0 < x \leq 10$      | $x = -n$       | $[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]$          |
+| `Lusbir('(]', 0, 10, -2)`       | $0 < x \leq 10$      | $x = -2n$      | $[10, 8, 6, 4, 2]$                         |
+| `Lusbir(0, -10)`                | $0 \leq x < -10$     | $x = n$        | (empty list)                               |
+| `Lusbir(10, 0, -1)`             | $10 \leq x < 0$      | $x = -n$       | (empty list)                               |
+| `Lusbir('[]', -10, 10, 3)`      | $-10 \leq x \leq 10$ | $x = 3n$       | $[-9, -6, -3, 0, 3, 6, 9]$                 |
+| `Lusbir('[]', -10, 10, 3, -10)` | $-10 \leq x \leq 10$ | $x = 3n - 10$  | $[-10, -7, -4, -1, 2, 5, 8]$               |
+| `Lusbir('[]', -10, 10, 3, 10)`  | $-10 \leq x \leq 10$ | $x = 3n + 10$  | $[-8, -5, -2, 1, 4, 7, 10]$                |
+| `Lusbir('()', -40, -20, 5, 1)`  | $-40 < x < -20$      | $x = 5n + 1$   | $[-39, -34, -29, -24]$                     |
+| `Lusbir('()', 0, 40, 8, -1)`    | $0 < x < 40$         | $x = 8n - 1$   | $[7, 15, 23, 31, 39]$                      |
+
+
+## Other exported items
+
+Aside from the core `Lusbir` class, the Lusbir library also exports the `BoundType` type alias and the `Bound` and `LusbTuple` named tuple types.
+
+`BoundType` is simply a type alias for `Literal['()', '(]', '[)', '[]']`, representing the four options for a lusbir's bound type.
+
+The lower and upper bounds of a lusbir comprise both a numeric bound and an inclusive/exclusive status. In the Lusbir library, they are modelled by `Bound` objects, which are named tuples with the form `Bound(number: int, inclusive: bool)`. For example, `Bound(0, True)` represents an inclusive bound of 0, while `Bound(100, False)` represents an exclusive bound of 100. Both lower bounds and upper bounds use the same class -- there is nothing that keeps track of whether a bound is a lower bound or an upper bound.
+
+The four pieces of information that characterize a lusbir -- the lower bound (lbound), upper bound (ubound), step, and base -- can be grouped into a **lusb tuple** $(\mathrm{lbound}, \mathrm{ubound}, \mathrm{step}, \mathrm{base})$. These are modelled in the Lusbir library by `LusbTuple` objects, which are named tuples with the form `Bound(lbound: Bound, ubound: Bound, step: int, base: int)`. For example, a lusbir with inclusive lower bound 0, exclusive upper bound 30, step 3, and base 2 has the lusb tuple `LusbTuple(Bound(0, True), Bound(30, False), 3, 2)`.
+
+A lusbir's lusb tuple can be obtained through its `lusb_tuple` property, and a lusbir can be created from a given lusb tuple using `Lusbir.from_lusb_tuple`:
+
+```python
+>>> from lusbir import Bound, LusbTuple, Lusbir
+>>> Lusbir('[)', 0, 30, 3, 2).lusb_tuple
+LusbTuple(lbound=Bound(number=0, inclusive=True), ubound=Bound(number=30, inclusive=False), step=3, base=2)
+>>> lusbir = Lusbir.from_lusb_tuple(LusbTuple(Bound(0, True), Bound(30, False), 3, 2))
+>>> lusbir
+Lusbir('[)', 0, 30, 3, 2)
+>>> list(lusbir)
+[2, 5, 8, 11, 14, 17, 20, 23, 26, 29]
+```
+
+There are a few reasons one might want to work with lusb tuples:
+- Equality for lusb tuples has stricter criteria than equality for lusbirs. Two lusbirs -- for example, `Lusbir('(]', 20, 50, 10, 5)` and `Lusbir('[)', 25, 55, 10, 25)` -- can represent the same list (in this case, $[25, 35, 45]$), but have different values for the lower bound, upper bound, step, and/or base. In this case, the lusbirs will compare equal, but their lusb tuples will not.
+- Unpacking a lusb tuple is an easy way of getting all of the information that specifies a lusbir:
+```python
+>>> from lusbir import Lusbir
+>>> lusbir = Lusbir('(]', 0, 20, -2)
+>>> (lb_num, lb_incl), (ub_num, ub_incl), step, base = lusbir.lusb_tuple
+>>> print(lb_incl, ub_incl, lb_num, ub_num, step, base)
+False True 0 20 -2 0
+```
+- If you already have booleans denoting whether the lower/upper bounds of a lusbir are inclusive, there's no need to convert the boolean inclusivities to a bound type when using `Lusbir.from_lusb_tuple`.
+
+
+## Other `Lusbir` functionality
+
+A lusbir's lower bound, upper bound, step, and base can be accessed through its `lbound`, `ubound`, `step`, and `base` properties, which have the same values as the corresponding properties on the lusbir's lusb tuple.
 
 ```python
 >>> from lusbir import Lusbir
->>> for i in Lusbir('(]', 5, 55, -10, 5):
-...     print(i)
-...
-55
-45
-35
-25
-15
+>>> lusbir = Lusbir('(]', 0, 20, -2)
+>>> lusbir.lbound
+Bound(number=0, inclusive=False)
+>>> lusbir.ubound
+Bound(number=20, inclusive=True)
+>>> lusbir.step
+-2
+>>> lusbir.base
+0
 ```
 
-This time, the created lusbir has lower bound 5, upper bound 55, step -10, and base 5. The bound type `'(]'` indicates that the lower bound is _exclusive_ and the upper bound is _inclusive_.
-
-Aside from `'[)'` and `'(]'`, the other bound types are `'[]'`, which indicates that both the lower bound and the upper bound are _inclusive_, and `'()'`, which indicates that both the lower bound and the upper bound are _exclusive_. This mirrors the standard mathematical notation for inclusive/exclusive intervals: all of the numbers in `Lusbir('[)', lb_num, ub_num, step, base)` are in the interval $[\mathrm{lb{\textunderscore}num}, \mathrm{ub{\textunderscore}num})$, all of the numbers in `Lusbir('(]', lb_num, ub_num, step, base)` are in the interval $(\mathrm{lb{\textunderscore}num}, \mathrm{ub{\textunderscore}num}]$, etc.
-
-### Short forms
-
-We don't always have to specify all five arguments each time.
-
-If we omit the bound type, it will default to `'[)'`:
+The `to_range` instance method and the `Lusbir.from_range` static method allow for conversions between lusbirs and Python ranges (note that conversions may be lossy):
 
 ```python
->>> list(Lusbir(1, 11, 2, 1))  # 1 <= x < 11, x = 2n + 1
-[1, 3, 5, 7, 9]
+>>> from lusbir import Lusbir
+>>> Lusbir(0, 40, 8, 2).to_range()
+range(2, 42, 8)
+>>> Lusbir.from_range(range(2, 42, 8))
+Lusbir('[)', 2, 42, 8, 2)
 ```
 
-We can omit the final argument -- the base -- and have it default to 0:
+Most importantly, `Lusbir` is a subclass of `collections.abc.Sequence`, and implements the same functionality that `range` implements -- `__getitem__`, `__hash__`, `__len__`, `count`, `index`, etc.
 
-```python
->>> list(Lusbir('[]', 0, 50, 10))  # 0 <= x <= 50, x = 10n
-[0, 10, 20, 30, 40, 50]
->>> list(Lusbir(5, 55, -10))  # 5 <= x < 55, x = -10n
-[50, 40, 30, 20, 10]
-```
+Here are all of the public properties/methods of the `Lusbir` class (`lr` represents an instance of the class):
+- `Lusbir(ub_num: int, /) -> Lusbir`
+- `Lusbir(lb_num: int, ub_num: int, step: int = 1, base: int = 0, /) -> Lusbir`
+- `Lusbir(bound_type: BoundType, lb_num: int, ub_num: int, step: int = 1, base: int = 0, /) -> Lusbir`
+- `Lusbir.from_lusb_tuple(lusb_tuple: LusbTuple, /) -> Lusbir`
+- `lr.lbound: Bound`
+- `lr.ubound: Bound`
+- `lr.step: int`
+- `lr.base: int`
+- `lr.lusb_tuple: LusbTuple`
+- `lr.__eq__(other, /) -> bool`
+- `lr.__getitem__(index: int, /) -> int`
+- `lr.__getitem__(slice_: slice, /) -> Lusbir`
+- `lr.__hash__() -> int`
+- `lr.__iter__() -> Iterator[int]`
+- `lr.__repr__() -> str`
+- `Lusbir.from_range(r: range, /) -> Lusbir`
+- `lr.to_range() -> range`
+- `lr.__bool__() -> bool`
+- `lr.__contains__(x: int, /) -> bool`
+- `lr.__len__() -> int`
+- `lr.__reversed__() -> Iterator[int]`
+- `lr.count(x: int, /) -> int`
+- `lr.index(x: int, /) -> int`
 
-We can omit the final two arguments -- the step and the base -- and have them default to 1 and 0, respectively:
 
-```python
->>> list(Lusbir('()', -5, 5))  # -5 < x < 5
-[-4, -3, -2, -1, 0, 1, 2, 3, 4]
->>> list(Lusbir(-5, 5))  # -5 <= x < 5
-[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4]
-```
-
-Lastly, we can provide only one argument -- the numeric upper bound -- and get a lusbir with bound type `'[)'`, lower bound 0, step 1, and base 0:
-```python
->>> list(Lusbir(10))
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-```
+## Misc
+- I currently have no plans to further maintain or update the code for this library. If I do make changes to this library, it will be published as a new version, conforming to [SemVer](https://semver.org/).
+- Still, if you spot any bugs, typos, or other problems in the code, tests, or documentation, please let me know via email: `bl.swt1@gmail.com`.
+- If you manage to find some amazing use case for this library not already covered by built-in Python ranges, I would love to hear about it.
+- Thanks for viewing and reading about this project!
