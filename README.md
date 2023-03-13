@@ -118,7 +118,7 @@ By default, `bound_type` is `'[)'`, `lb_num` is 0, `step` is 1, and `base` is 0.
 | `Lusbir('[]', -6, 6, 2)`        | $-6 \leq x \leq 6$   | $x = 2n$       | $[-6, -4, -2, 0, 2, 4, 6]$                 |
 | `Lusbir('()', -6, 0)`           | $-6 < x < 0$         | $x = n$        | $[-5, -4, -3, -2, -1]$                     |
 | `Lusbir(10)`                    | $0 \leq x < 10$      | $x = n$        | $[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]$           |
-| `Lusbir(10, 20)`                | $10 \leq x < 20$     | $x = n$        | $[10, 11, 12, 13, 14, 15, 16, 17, 18, 19]$ |
+| `Lusbir(10, 15)`                | $10 \leq x < 15$     | $x = n$        | $[10, 11, 12, 13, 14]$                     |
 | `Lusbir(10, 20, 2)`             | $10 \leq x < 20$     | $x = 2n$       | $[10, 12, 14, 16, 18]$                     |
 | `Lusbir(10, 20, 2, 1)`          | $10 \leq x < 20$     | $x = 2n + 1$   | $[11, 13, 15, 17, 19]$                     |
 | `Lusbir(10, 20, -2, 1)`         | $10 \leq x < 20$     | $x = -2n + 1$  | $[19, 17, 15, 13, 11]$                     |
@@ -142,7 +142,7 @@ Aside from the core `Lusbir` class, the Lusbir library also exports the `BoundTy
 
 The lower and upper bounds of a lusbir comprise both a numeric bound and an inclusive/exclusive status. In the Lusbir library, they are modelled by `Bound` objects, which are named tuples with the form `Bound(number: int, inclusive: bool)`. For example, `Bound(0, True)` represents an inclusive bound of 0, while `Bound(100, False)` represents an exclusive bound of 100. Both lower bounds and upper bounds use the same class -- there is nothing that keeps track of whether a bound is a lower bound or an upper bound.
 
-The four pieces of information that characterize a lusbir -- the lower bound (lbound), upper bound (ubound), step, and base -- can be grouped into a **lusb tuple** $(\mathrm{lbound}, \mathrm{ubound}, \mathrm{step}, \mathrm{base})$. These are modelled in the Lusbir library by `LusbTuple` objects, which are named tuples with the form `Bound(lbound: Bound, ubound: Bound, step: int, base: int)`. For example, a lusbir with inclusive lower bound 0, exclusive upper bound 30, step 3, and base 2 has the lusb tuple `LusbTuple(Bound(0, True), Bound(30, False), 3, 2)`.
+The four pieces of information that characterize a lusbir -- the lower bound (lbound), upper bound (ubound), step, and base -- can be grouped into a **lusb tuple** $(\mathrm{lbound}, \mathrm{ubound}, \mathrm{step}, \mathrm{base})$. These are modelled in the Lusbir library by `LusbTuple` objects, which are named tuples with the form `LusbTuple(lbound: Bound, ubound: Bound, step: int, base: int)`. For example, a lusbir with inclusive lower bound 0, exclusive upper bound 30, step 3, and base 2 has the lusb tuple `LusbTuple(Bound(0, True), Bound(30, False), 3, 2)`.
 
 A lusbir's lusb tuple can be obtained through its `lusb_tuple` property, and a lusbir can be created from a given lusb tuple using `Lusbir.from_lusb_tuple`:
 
