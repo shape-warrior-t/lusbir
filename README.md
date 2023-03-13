@@ -138,11 +138,11 @@ By default, `bound_type` is `'[)'`, `lb_num` is 0, `step` is 1, and `base` is 0.
 
 Aside from the core `Lusbir` class, the Lusbir library also exports the `BoundType` type alias and the `Bound` and `LusbTuple` named tuple types.
 
-`BoundType` is simply a type alias for `Literal['()', '(]', '[)', '[]']`, representing the four options for a lusbir's bound type.
+`BoundType` is simply a type alias for <code>Literal['()',&nbsp;'(]',&nbsp;'[)',&nbsp;'[]']</code>, representing the four options for a lusbir's bound type.
 
-The lower and upper bounds of a lusbir comprise both a numeric bound and an inclusive/exclusive status. In the Lusbir library, they are modelled by `Bound` objects, which are named tuples with the form `Bound(number: int, inclusive: bool)`. For example, `Bound(0, True)` represents an inclusive bound of 0, while `Bound(100, False)` represents an exclusive bound of 100. Both lower bounds and upper bounds use the same class -- there is nothing that keeps track of whether a bound is a lower bound or an upper bound.
+The lower and upper bounds of a lusbir comprise both a numeric bound and an inclusive/exclusive status. In the Lusbir library, they are modelled by `Bound` objects, which are named tuples with the form <code>Bound(number:&nbsp;int,&nbsp;inclusive:&nbsp;bool)</code>. For example, <code>Bound(0,&nbsp;True)</code> represents an inclusive bound of 0, while <code>Bound(100,&nbsp;False)</code> represents an exclusive bound of 100. Both lower bounds and upper bounds use the same class -- there is nothing that keeps track of whether a bound is a lower bound or an upper bound.
 
-The four pieces of information that characterize a lusbir -- the lower bound (lbound), upper bound (ubound), step, and base -- can be grouped into a **lusb tuple** $(\mathrm{lbound}, \mathrm{ubound}, \mathrm{step}, \mathrm{base})$. These are modelled in the Lusbir library by `LusbTuple` objects, which are named tuples with the form `LusbTuple(lbound: Bound, ubound: Bound, step: int, base: int)`. For example, a lusbir with inclusive lower bound 0, exclusive upper bound 30, step 3, and base 2 has the lusb tuple `LusbTuple(Bound(0, True), Bound(30, False), 3, 2)`.
+The four pieces of information that characterize a lusbir -- the lower bound (lbound), upper bound (ubound), step, and base -- can be grouped into a **lusb tuple** $(\mathrm{lbound}, \mathrm{ubound}, \mathrm{step}, \mathrm{base})$. These are modelled in the Lusbir library by `LusbTuple` objects, which are named tuples with the form <code>LusbTuple(lbound:&nbsp;Bound,&nbsp;ubound:&nbsp;Bound,&nbsp;step:&nbsp;int,&nbsp;base:&nbsp;int)</code>. For example, a lusbir with inclusive lower bound 0, exclusive upper bound 30, step 3, and base 2 has the lusb tuple <code>LusbTuple(Bound(0,&nbsp;True),&nbsp;Bound(30,&nbsp;False),&nbsp;3,&nbsp;2)</code>.
 
 A lusbir's lusb tuple can be obtained through its `lusb_tuple` property, and a lusbir can be created from a given lusb tuple using `Lusbir.from_lusb_tuple`:
 
@@ -158,7 +158,7 @@ Lusbir('[)', 0, 30, 3, 2)
 ```
 
 There are a few reasons one might want to work with lusb tuples:
-- Equality for lusb tuples has stricter criteria than equality for lusbirs. Two lusbirs -- for example, `Lusbir('(]', 20, 50, 10, 5)` and `Lusbir('[)', 25, 55, 10, 25)` -- can represent the same list (in this case, $[25, 35, 45]$), but have different values for the lower bound, upper bound, step, and/or base. In this case, the lusbirs will compare equal, but their lusb tuples will not.
+- Equality for lusb tuples has stricter criteria than equality for lusbirs. Two lusbirs -- for example, <code>Lusbir('(]',&nbsp;20,&nbsp;50,&nbsp;10,&nbsp;5)</code> and <code>Lusbir('[)',&nbsp;25,&nbsp;55,&nbsp;10,&nbsp;25)</code> -- can represent the same list (in this case, $[25, 35, 45]$), but have different values for the lower bound, upper bound, step, and/or base. In this case, the lusbirs will compare equal, but their lusb tuples will not.
 - Unpacking a lusb tuple is an easy way of getting all of the information that specifies a lusbir:
 ```python
 >>> from lusbir import Lusbir
