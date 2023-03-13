@@ -199,7 +199,7 @@ Lusbir('[)', 2, 42, 8, 2)
 
 Most importantly, `Lusbir` is a subclass of `collections.abc.Sequence`, and implements the same functionality that `range` implements -- `__getitem__`, `__hash__`, `__len__`, `count`, `index`, etc.
 
-Here are all of the public properties/methods of the `Lusbir` class (`lr` represents an instance of the class):
+Here are all of the public constructors, properties, and methods of the `Lusbir` class (`lr` represents an instance of the class):
 - `Lusbir(ub_num: int, /) -> Lusbir`
 - `Lusbir(lb_num: int, ub_num: int, step: int = 1, base: int = 0, /) -> Lusbir`
 - `Lusbir(bound_type: BoundType, lb_num: int, ub_num: int, step: int = 1, base: int = 0, /) -> Lusbir`
