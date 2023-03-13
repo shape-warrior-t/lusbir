@@ -53,7 +53,7 @@ $$55, 45, 35, 25, 15$$
 
 We find that this lusbir represents the list $[55, 45, 35, 25, 15]$. Since the step is negative, the list is ordered from high to low.
 
-In general, if a number is of the form $m \times \mathrm{step} + \mathrm{base}$ for some integer $m$, then it will be of the form $n \times \mathrm{-step} + \mathrm{base}$ for the integer $n = -m$. Thus, negating the step of a lusbir will always reverse the list that it represents.
+In general, if a number is of the form $m \times \mathrm{step} + \mathrm{base}$ for some integer $m$, then it will be of the form $n \times \mathrm{-step} + \mathrm{base}$ for the integer $n = -m$. Thus, flipping the sign of a lusbir's step does not change which numbers it contains; it only reverses the lusbir's order.
 
 
 ## Lusbirs in code
