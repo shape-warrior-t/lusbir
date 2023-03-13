@@ -365,14 +365,14 @@ class Lusbir(Sequence):
 
     @staticmethod
     def from_range(r: range, /) -> 'Lusbir':
-        """Return a lusbir representing the same list as the given Python range."""
+        """Return a lusbir that represents the same list as the given Python range."""
         if r.step > 0:
             return Lusbir('[)', r.start, r.stop, r.step, r.start)
         else:
             return Lusbir('(]', r.stop, r.start, r.step, r.start)
 
     def to_range(self, /) -> range:
-        """Return a range representing the same list as this lusbir."""
+        """Return a Python range that represents the same list as this lusbir."""
         return self._range
 
     # endregion
